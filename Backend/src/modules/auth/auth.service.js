@@ -1,24 +1,23 @@
-import bcrypt from "bcryptjs";
-import db from "../../config/db.js";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import db from "../../config/db.js";
 
 const SALT_ROUNDS = 10;
 
 export async function registerUser({ email, username, password, full_name }) {
   if (!email || !username || !password) {
-    throw badRequest("Missing required fields");
+    throw error(400, "Missing required fields");
   }
 
   email = email.toLowerCase();
   username = username.toLowerCase();
 
   if (!/^[a-z0-9_]{3,30}$/.test(username)) {
-    throw badRequest("Invalid username format");
+    throw error(400, "Invalid username format");
   }
 
   if (password.length < 8) {
-    throw badRequest("Password must be at least 8 characters");
+    throw error(400, "Password must be at least 8 characters");
   }
 
   const emailExists = await db.query(
@@ -26,7 +25,7 @@ export async function registerUser({ email, username, password, full_name }) {
     [email]
   );
   if (emailExists.rowCount > 0) {
-    throw conflict("EMAIL_ALREADY_EXISTS");
+    throw error(409, "EMAIL_ALREADY_EXISTS");
   }
 
   const usernameExists = await db.query(
@@ -34,7 +33,7 @@ export async function registerUser({ email, username, password, full_name }) {
     [username]
   );
   if (usernameExists.rowCount > 0) {
-    throw conflict("USERNAME_ALREADY_EXISTS");
+    throw error(409, "USERNAME_ALREADY_EXISTS");
   }
 
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
@@ -53,7 +52,7 @@ export async function registerUser({ email, username, password, full_name }) {
 
 export async function loginUser({ email, password }) {
   if (!email || !password) {
-    throw badRequest("Email and password required");
+    throw error(400, "Email and password required");
   }
 
   email = email.toLowerCase();
@@ -68,54 +67,39 @@ export async function loginUser({ email, password }) {
   );
 
   if (result.rowCount === 0) {
-    throw unauthorized("Invalid credentials");
+    throw error(401, "Invalid credentials");
   }
 
   const user = result.rows[0];
+  const match = await bcrypt.compare(password, user.password_hash);
 
-  const passwordMatch = await bcrypt.compare(password, user.password_hash);
-  if (!passwordMatch) {
-    throw unauthorized("Invalid credentials");
+  if (!match) {
+    throw error(401, "Invalid credentials");
   }
 
-        const token = jwt.sign(
-        {
-            id: user.id,
-            email: user.email,
-            username: user.username
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN }
-        );
+  const token = jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+      username: user.username
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN }
+  );
 
-        return {
-        token,
-        user: {
-            id: user.id,
-            email: user.email,
-            username: user.username,
-            full_name: user.full_name
-        }
-        };
-
+  return {
+    token,
+    user: {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      full_name: user.full_name
+    }
+  };
 }
 
-/* -------- helpers -------- */
-
-function badRequest(message) {
+function error(status, message) {
   const err = new Error(message);
-  err.status = 400;
-  return err;
-}
-
-function conflict(code) {
-  const err = new Error(code);
-  err.status = 409;
-  return err;
-}
-
-function unauthorized(message) {
-  const err = new Error(message);
-  err.status = 401;
+  err.status = status;
   return err;
 }

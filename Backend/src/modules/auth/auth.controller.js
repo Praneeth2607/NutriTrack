@@ -11,8 +11,8 @@ export async function register(req, res, next) {
 
 export async function login(req, res, next) {
   try {
-    const user = await authService.loginUser(req.body);
-    res.status(200).json(user);
+    const result = await authService.loginUser(req.body);
+    res.json(result);
   } catch (err) {
     next(err);
   }
