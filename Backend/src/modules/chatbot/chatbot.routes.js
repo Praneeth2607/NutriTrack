@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { search } from "./food.controller.js";
+import { handleMessage } from "./chatbot.controller.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.get("/search", authenticate, search);
+router.post("/message", authenticate, handleMessage);
 
 export default router;
