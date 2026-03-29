@@ -1,7 +1,12 @@
 import { apiRequest } from "./api";
 
 export async function getProfile() {
-  return await apiRequest("/profile", { method: "GET" });
+  try {
+    return await apiRequest("/profile", { method: "GET" });
+  } catch (err) {
+    if (err.status === 404) return {};
+    throw err;
+  }
 }
 
 export async function updateProfile(profileData) {
