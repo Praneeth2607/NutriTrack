@@ -32,7 +32,13 @@ function calculateTargets(age, gender, height_cm, weight_kg, activity_level, goa
 }
 
 export async function getProfile(userId) {
-  const result = await pool.query("SELECT * FROM user_profiles WHERE user_id = $1", [userId]);
+  const query = `
+    SELECT p.*, u.username, u.full_name, u.email 
+    FROM user_profiles p
+    JOIN users u ON p.user_id = u.id
+    WHERE p.user_id = $1
+  `;
+  const result = await pool.query(query, [userId]);
   return result.rows[0] || null;
 }
 

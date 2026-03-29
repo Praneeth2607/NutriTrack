@@ -12,10 +12,10 @@ async function queryFoods(orderByColumn, direction, limit, prefixMessage) {
   
   const foodsList = result.rows.map(row => 
     `- **${row.name}**: ${row.calories_kcal} kcal | ${row.protein_g}g protein | ${row.carbs_g}g carbs | ${row.fat_g}g fat (per 100g)`
-  ).join("\\n");
+  ).join("\n");
 
   return {
-    text: `${prefixMessage}\\n\\n${foodsList}`,
+    text: `${prefixMessage}\n\n${foodsList}`,
     foods: result.rows
   };
 }
