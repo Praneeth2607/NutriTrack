@@ -17,9 +17,7 @@ export default function FoodSearch({ onLogAdded }) {
     try {
       const data = await searchFoods(query);
       setResults(data);
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
     setLoading(false);
   };
 
@@ -37,61 +35,60 @@ export default function FoodSearch({ onLogAdded }) {
       setSelectedFood(null);
       setQuery("");
       setResults([]);
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow border mb-6">
-      <h3 className="text-lg font-bold mb-4">Log Food</h3>
-      
+    <div className="w-full">
       {!selectedFood ? (
-        <div>
-          <form onSubmit={handleSearch} className="flex gap-2 mb-4">
+        <div className="space-y-4">
+          <form onSubmit={handleSearch} className="flex flex-col gap-3">
             <input 
               type="text" 
               placeholder="Search Indian foods..." 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 border border-gray-300 rounded p-2"
+              className="w-full bg-gray-50/50 border-none rounded-2xl px-5 py-4 font-bold text-gray-700 focus:ring-4 focus:ring-green-500/10 transition-all placeholder:text-gray-300 placeholder:font-normal"
             />
-            <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
-              Search
+            <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-green-100 transition-all active:scale-95 uppercase tracking-widest text-xs">
+              {loading ? "Searching..." : "Search Database"}
             </button>
           </form>
 
-          {loading && <p>Searching...</p>}
-          
           {results.length > 0 && (
-            <ul className="max-h-60 overflow-y-auto space-y-2">
+            <div className="bg-white/50 backdrop-blur-md rounded-2xl border border-gray-100 overflow-hidden shadow-inner max-h-[300px] overflow-y-auto custom-scrollbar animate-fade-in">
               {results.map((food) => (
-                <li key={food.id} className="p-2 border rounded hover:bg-gray-50 flex justify-between items-center cursor-pointer" onClick={() => setSelectedFood(food)}>
+                <div key={food.id} className="p-4 border-b border-gray-50 hover:bg-white flex justify-between items-center cursor-pointer transition-colors" onClick={() => setSelectedFood(food)}>
                   <div>
-                    <span className="font-medium">{food.name}</span>
-                    <span className="text-xs text-gray-500 block">{food.calories_kcal} kcal / 100g</span>
+                    <span className="font-extrabold text-gray-800 text-xs block uppercase tracking-tighter">{food.name}</span>
+                    <span className="text-[10px] text-gray-400 font-bold uppercase">{food.calories_kcal} kcal / 100g</span>
                   </div>
-                  <button className="text-green-600 text-sm font-bold">Select</button>
-                </li>
+                  <span className="w-8 h-8 bg-green-50 rounded-xl flex items-center justify-center text-green-600 text-lg">› transition-all shadow-inner placeholder:text-gray-300 placeholder:font-normal</span>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       ) : (
-        <form onSubmit={handleLog} className="space-y-4">
-          <div className="bg-green-50 p-3 rounded flex justify-between items-center">
-            <span className="font-bold">{selectedFood.name}</span>
-            <button type="button" onClick={() => setSelectedFood(null)} className="text-gray-500 text-sm">Cancel</button>
+        <form onSubmit={handleLog} className="space-y-6 animate-fade-in-up">
+          <div className="bg-gradient-to-br from-green-50 to-teal-50 p-5 rounded-[2rem] border border-green-100 flex justify-between items-center group">
+            <div className="flex-1">
+                <span className="text-[9px] font-black text-green-600 uppercase tracking-widest block mb-1">Selected Unit</span>
+                <span className="font-black text-green-900 text-sm">{selectedFood.name}</span>
+            </div>
+            <button type="button" onClick={() => setSelectedFood(null)} className="p-2 bg-white text-gray-400 hover:text-red-500 rounded-xl shadow-sm transition-colors">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
           </div>
           
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700">Quantity (grams)</label>
-              <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} required min="1" className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 border" />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">Quantity (g)</label>
+              <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} required min="1" className="w-full bg-gray-50 border-none rounded-2xl p-4 font-black text-gray-700 focus:ring-4 focus:ring-green-500/10 transition-all" />
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700">Meal</label>
-              <select value={mealType} onChange={(e) => setMealType(e.target.value)} className="mt-1 block w-full rounded border-gray-300 shadow-sm p-2 border">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">Meal Block</label>
+              <select value={mealType} onChange={(e) => setMealType(e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl p-4 font-black text-gray-700 focus:ring-4 focus:ring-green-500/10 transition-all">
                 <option value="breakfast">Breakfast</option>
                 <option value="lunch">Lunch</option>
                 <option value="snack">Snack</option>
@@ -99,11 +96,16 @@ export default function FoodSearch({ onLogAdded }) {
               </select>
             </div>
           </div>
-          <button type="submit" className="w-full bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700">
-            Log Intake
+          <button type="submit" className="w-full bg-gray-900 hover:bg-black text-white font-black py-5 rounded-2xl shadow-xl transition-all transform active:scale-95 uppercase tracking-[0.2em] text-xs">
+            Commit Entry
           </button>
         </form>
       )}
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+      `}} />
     </div>
   );
 }

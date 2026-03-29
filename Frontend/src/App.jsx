@@ -9,9 +9,9 @@ import ProtectedRoute from "./guards/ProtectedRoute";
 
 function Layout() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col relative overflow-x-hidden">
       <Navigation />
-      <main className="flex-1 p-4 md:p-8">
+      <main className="flex-1 p-4 md:p-8 pt-24 md:pt-28">
         <Outlet />
       </main>
     </div>

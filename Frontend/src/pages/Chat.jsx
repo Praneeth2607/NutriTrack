@@ -4,7 +4,7 @@ import { sendMessage } from "../services/chatbot";
 
 export default function Chat() {
   const [messages, setMessages] = useState([
-    { role: "bot", content: "Hi! I'm your **NutriTrack Assistant**. I can help you find specialized food recommendations based on your goals!\n\nTry asking me for:\n- **High protein** foods\n- **Low carb** options\n- **Iron rich** or **Calcium rich** foods\n- **Low calorie** snacks" }
+    { role: "bot", content: "Agent **Nutri Assistant** online.\n\nStatus: Synced with Dataset.\nCapability: Specialized Nutrition Architecture.\n\nWhat high-impact nutritional inquiry do you have today?" }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,102 +27,110 @@ export default function Chat() {
       const response = await sendMessage(userMessage);
       setMessages(prev => [...prev, { role: "bot", content: response.text }]);
     } catch (err) {
-      setMessages(prev => [...prev, { role: "bot", content: "Sorry, I had trouble processing that request. Please try again later." }]);
-    }
-    setLoading(false);
+      setMessages(prev => [...prev, { role: "bot", content: "Error: Neural Link Interrupted. Retry." }]);
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="max-w-5xl mx-auto h-[85vh] flex flex-col bg-white/70 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/60 overflow-hidden animate-fade-in relative">
+    <div className="h-[85vh] flex flex-col max-w-6xl mx-auto px-4 animate-fade-in mb-20">
       
-      {/* Premium Header */}
-      <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 flex items-center justify-between shadow-lg relative z-10">
-        <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl animate-pulse">
-                🥗
-            </div>
-            <div>
-                <h2 className="text-xl font-black tracking-tight uppercase">Nutri Assistant</h2>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-2 h-2 bg-green-300 rounded-full animate-ping"></span>
-                    <span className="text-[10px] font-bold text-green-100 uppercase tracking-widest">Active Now</span>
-                </div>
-            </div>
-        </div>
-        <button className="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-colors">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
-        </button>
-      </div>
-      
-      {/* Messages Feed */}
-      <div className="flex-1 p-6 overflow-y-auto space-y-6 bg-gradient-to-b from-gray-50/50 to-white/50 scroll-smooth">
-        {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`} style={{ animationDelay: `${i * 0.05}s` }}>
-            <div className={`group relative max-w-[85%] md:max-w-[70%] p-5 rounded-3xl shadow-sm transition-all hover:shadow-md ${
-                m.role === "user" 
-                ? "bg-gradient-to-br from-green-600 to-teal-700 text-white rounded-br-none" 
-                : "bg-white border border-gray-100 text-gray-800 rounded-bl-none"
-            }`}>
-              <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-strong:text-inherit prose-li:my-1">
-                <ReactMarkdown>{m.content}</ReactMarkdown>
-              </div>
-              <span className={`text-[9px] mt-2 block opacity-40 font-bold uppercase tracking-tighter ${m.role === "user" ? "text-right" : "text-left"}`}>
-                {m.role === "user" ? "You" : "NutriTrack Bot"}
-              </span>
-            </div>
-          </div>
-        ))}
-        
-        {loading && (
-          <div className="flex justify-start animate-pulse">
-            <div className="bg-white border border-gray-100 text-gray-400 rounded-3xl p-4 rounded-bl-none shadow-sm flex gap-1.5 items-center">
-              <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce"></span>
-              <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-              <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-            </div>
-          </div>
-        )}
-        <div ref={endRef} />
+      {/* Background Asset */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
+        <img src="/dashboard_hero_bg_1774790398014.png" className="w-full h-full object-cover blur-[100px]" alt="" />
       </div>
 
-      {/* Modern Pill Input */}
-      <div className="p-6 bg-white/40 backdrop-blur-md border-t border-white/40 relative z-10">
-        <form onSubmit={handleSend} className="relative flex items-center max-w-4xl mx-auto group">
-            <input 
-                type="text" 
-                value={input} 
-                onChange={(e) => setInput(e.target.value)} 
-                placeholder="Message your assistant..." 
-                className="w-full bg-white border border-gray-100 rounded-[2.5rem] pl-6 pr-16 py-5 shadow-inner focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-400 transition-all font-medium text-gray-700 placeholder:text-gray-400"
-            />
-            <button 
-                type="submit" 
-                disabled={loading || !input.trim()} 
-                className="absolute right-2 p-4 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:hover:scale-100"
-            >
-                <svg className="w-6 h-6 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                </svg>
-            </button>
-        </form>
-        <p className="text-center text-[10px] text-gray-400 mt-3 font-bold uppercase tracking-[0.2em]">
-            Powered by NutriTrack Data Engine
-        </p>
+      <div className="relative z-10 h-full flex flex-col md:flex-row gap-8">
+        
+        {/* Left Side: Agent Persona Module */}
+        <div className="w-full md:w-80 h-fit bg-white/70 backdrop-blur-3xl rounded-[2.5rem] border border-white/60 p-8 shadow-xl">
+             <div className="flex items-center gap-4 mb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-teal-600 rounded-3xl flex items-center justify-center text-3xl shadow-lg shadow-green-200">🤖</div>
+                <div>
+                   <h3 className="text-xl font-black text-gray-800 tracking-tighter leading-none">NutriBot</h3>
+                   <span className="text-[10px] font-bold text-green-600 uppercase tracking-widest">v4.0 Alpha</span>
+                </div>
+             </div>
+             
+             <div className="space-y-6">
+                <div>
+                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Primary Core</span>
+                    <p className="text-xs font-bold text-gray-600">Indian Food Database Analyzer</p>
+                </div>
+                <div>
+                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Current Context</span>
+                    <p className="text-xs font-bold text-gray-600">Personalized Health Optimization</p>
+                </div>
+                <div className="pt-4 border-t border-gray-100">
+                   <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                        <span className="text-[10px] font-extrabold text-gray-800 uppercase tracking-widest">Neural Link Active</span>
+                   </div>
+                </div>
+             </div>
+        </div>
+
+        {/* Right Side: Chat Container */}
+        <div className="flex-1 flex flex-col bg-white/40 backdrop-blur-2xl rounded-[3rem] border border-white/60 shadow-2xl overflow-hidden relative">
+            
+            {/* Messages Feed */}
+            <div className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth custom-scrollbar relative z-10">
+                {messages.map((m, i) => (
+                    <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}>
+                        <div className={`max-w-[90%] md:max-w-[80%] p-6 rounded-[2rem] shadow-sm relative transition-all hover:shadow-md ${
+                            m.role === "user"
+                            ? "bg-gray-900 text-white rounded-br-none"
+                            : "bg-white border border-gray-100 text-gray-800 rounded-bl-none ring-8 ring-gray-50/50"
+                        }`}>
+                            <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-strong:text-inherit prose-li:my-1">
+                                <ReactMarkdown>{m.content}</ReactMarkdown>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+                
+                {loading && (
+                    <div className="flex justify-start">
+                        <div className="bg-white border border-gray-100 p-6 rounded-[2rem] rounded-bl-none flex gap-2">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></span>
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                        </div>
+                    </div>
+                )}
+                <div ref={endRef} />
+            </div>
+
+            {/* Input Module */}
+            <div className="p-8 bg-white/60 border-t border-gray-100 relative z-20">
+                <form onSubmit={handleSend} className="relative group max-w-3xl mx-auto">
+                    <input 
+                        type="text" 
+                        value={input} 
+                        onChange={(e) => setInput(e.target.value)} 
+                        placeholder="Inquire Neural Link..." 
+                        className="w-full bg-white rounded-[2rem] border border-gray-100 p-6 pr-20 font-black text-gray-800 focus:outline-none focus:ring-8 focus:ring-green-500/5 focus:border-green-400 transition-all shadow-inner placeholder:text-gray-300 placeholder:font-normal"
+                    />
+                    <button 
+                        type="submit" 
+                        disabled={loading || !input.trim()} 
+                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-gray-900 hover:bg-black text-white p-4 rounded-3xl transition-all hover:scale-105 active:scale-95 disabled:opacity-20 shadow-xl"
+                    >
+                        <svg className="w-6 h-6 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
-        @keyframes fade-in-up { 
-            0% { opacity: 0; transform: translateY(15px); } 
-            100% { opacity: 1; transform: translateY(0); } 
-        }
-        .animate-fade-in { animation: fade-in 0.6s ease-out; }
+        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.8s ease-out; }
         .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
-        
-        /* Markdown Overrides */
-        .prose strong { color: inherit; font-weight: 800; }
-        .prose ul { list-style-type: decimal; }
-        .prose li::marker { color: inherit; font-weight: bold; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
       `}} />
     </div>
   );
