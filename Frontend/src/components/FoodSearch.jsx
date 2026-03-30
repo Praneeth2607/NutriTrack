@@ -63,7 +63,9 @@ export default function FoodSearch({ onLogAdded }) {
                     <span className="font-extrabold text-gray-800 text-xs block uppercase tracking-tighter">{food.name}</span>
                     <span className="text-[10px] text-gray-400 font-bold uppercase">{food.calories_kcal} kcal / 100g</span>
                   </div>
-                  <span className="w-8 h-8 bg-green-50 rounded-xl flex items-center justify-center text-green-600 text-lg">› transition-all shadow-inner placeholder:text-gray-300 placeholder:font-normal</span>
+                  <span className="w-8 h-8 bg-green-50 rounded-xl flex items-center justify-center text-green-600 text-lg transition-all shadow-inner placeholder:text-gray-300 placeholder:font-normal">
+                    ›
+                  </span>
                 </div>
               ))}
             </div>

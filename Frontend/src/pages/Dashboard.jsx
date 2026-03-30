@@ -104,6 +104,14 @@ export default function Dashboard() {
   const targetPro = Number(profile?.target_protein_g || 50);
   const proPercent = Math.round((consumedPro / targetPro) * 100) || 0;
 
+  const consumedCarbs = Number(sum.total_carbs || 0);
+  const targetCarbs = Math.round((targetCals * 0.5) / 4);
+  const carbPercent = Math.round((consumedCarbs / targetCarbs) * 100) || 0;
+
+  const consumedFat = Number(sum.total_fat || 0);
+  const targetFat = Math.round((targetCals * 0.3) / 9);
+  const fatPercent = Math.round((consumedFat / targetFat) * 100) || 0;
+
   return (
     <div className="min-h-screen pb-20 px-4 md:px-8 relative">
       
@@ -174,12 +182,12 @@ export default function Dashboard() {
                  <div>
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Carbohydrates</span>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-gray-800">{Number(sum.total_carbs || 0).toFixed(0)}</span>
-                        <span className="text-sm font-bold text-gray-400 uppercase">Grams</span>
+                        <span className="text-3xl font-black text-gray-800">{consumedCarbs.toFixed(0)}</span>
+                        <span className="text-[10px] font-bold text-gray-400 uppercase">/ {targetCarbs}G</span>
                     </div>
                  </div>
                  <div className="w-full bg-gray-50 h-2 rounded-full overflow-hidden">
-                    <div className="h-full bg-yellow-400 rounded-full" style={{ width: '45%' }}></div>
+                    <div className="h-full bg-yellow-400 rounded-full transition-all duration-1000" style={{ width: `${Math.min(carbPercent, 100)}%` }}></div>
                  </div>
              </div>
           </div>
@@ -190,12 +198,12 @@ export default function Dashboard() {
                  <div>
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Healthy Fats</span>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-gray-800">{Number(sum.total_fat || 0).toFixed(0)}</span>
-                        <span className="text-sm font-bold text-gray-400 uppercase">Grams</span>
+                        <span className="text-3xl font-black text-gray-800">{consumedFat.toFixed(0)}</span>
+                        <span className="text-[10px] font-bold text-gray-400 uppercase">/ {targetFat}G</span>
                     </div>
                  </div>
                  <div className="w-full bg-gray-50 h-2 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-400 rounded-full" style={{ width: '30%' }}></div>
+                    <div className="h-full bg-indigo-400 rounded-full transition-all duration-1000" style={{ width: `${Math.min(fatPercent, 100)}%` }}></div>
                  </div>
              </div>
           </div>
