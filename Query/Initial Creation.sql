@@ -58,7 +58,7 @@ ON foods
 USING gin (to_tsvector('english', name));
 
 --- in psql 
---- \copy foods_raw FROM 'C:/Users/study/Downloads/indian_foods.csv' CSV HEADER;
+copy foods_raw FROM 'C:/Users/study/Downloads/indian_foods.csv' CSV HEADER;
 
 select * from foods;
 
@@ -108,3 +108,5 @@ JOIN food_nutrients n ON f.id = n.food_id
 LIMIT 10;
 
 SELECT COUNT(*) FROM food_nutrients;
+Select * from food_nutrients;
+Select * from foods_raw;
